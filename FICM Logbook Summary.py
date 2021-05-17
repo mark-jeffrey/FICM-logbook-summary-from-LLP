@@ -6,10 +6,10 @@
 
 # User Defined Variables
 
-name = 'Mark Jeffrey'
+name = 'ICM Trainee'
 logbook = 'logbook_export.xlsx'
-start_date = 'Aug 18'
-end_date = 'Aug 21'
+start_date = 'start'
+end_date = 'end'
 
 
 # Events Table
