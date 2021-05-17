@@ -1,14 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # FICM Logbook Summary Report 
-
+# FICM Logbook Summary Report 
 # Creates a FICM Logbook Summary Report from an Anaesthetics LLP Logbook excel export
 
-# ## User Defined Variables
-
-# In[15]:
-
+# User Defined Variables
 
 name = 'Mark Jeffrey'
 logbook = 'logbook_export.xlsx'
@@ -16,47 +12,26 @@ start_date = 'Aug 18'
 end_date = 'Aug 21'
 
 
-# ## Events Table
+# Events Table
 
-# In[20]:
-
-
-#Import Libraries
-
+# Import Libraries
 import pandas as pd
-
-
-# In[3]:
-
 
 #Import each sheet into a DataFrame
 #Set Case ID as Index
-
 anaesthetic_log = pd.read_excel(logbook, sheet_name='LOGBOOK_CASE_ANAESTHETIC',index_col=0)
 procedure_log = pd.read_excel(logbook, sheet_name='LOGBOOK_STAND_ALONE_PROCEDURE',index_col=0)
 session_log = pd.read_excel(logbook, sheet_name='LOGBOOK_SESSION',index_col=0)
 icu_log = pd.read_excel(logbook, sheet_name='LOGBOOK_CASE_INTENSIVE',index_col=0)
 
-
-# In[4]:
-
-
 #Divide DataFrame by levels of supervision
 #local = immediate and local
 #distant = distant and solo
-
-#teaching not included in ICU cases - ?need to include in Notes on LLP
-
 icu_log_local = icu_log[(icu_log['Supervision']=='Immediate') | (icu_log['Supervision']=='Local')]
 icu_log_distant = icu_log[(icu_log['Supervision']=='Distant') | (icu_log['Supervision']=='Solo')]
 icu_log_teaching = icu_log[icu_log['Supervision']=='Teaching']
 
-
-# In[5]:
-
-
 #Data for event table columns
-
 event_local = [
     len(icu_log_local[icu_log_local['Event'].str.contains('ward-review')]),
     len(icu_log_local[icu_log_local['Event'].str.contains('admission')]),
@@ -93,12 +68,7 @@ event_total = [
     len(icu_log[icu_log['Event'].str.contains('end-of-life-care')])
 ]
 
-
-# In[6]:
-
-
 # Creates Events table
-
 Events = pd.DataFrame(
     data=[event_local, event_distant, event_total],              #event_teaching,
     index= ['Local Supervision','Distant Supervision','Total'],  #'Teaching'
@@ -107,18 +77,11 @@ Events = pd.DataFrame(
 
 #Transpose axes for correct layout
 Events = Events.T
-
-#Titles Index
 Events.index.names = ['Events']
 
-
-# ## Procedures Table
-
-# In[7]:
-
+# Procedures Table
 
 #Procedures Multi-index
-
 outside = [
     'Airways and Lungs', 'Airways and Lungs','Airways and Lungs','Airways and Lungs','Airways and Lungs','Airways and Lungs',
     'Cardiovascular','Cardiovascular','Cardiovascular','Cardiovascular','Cardiovascular','Cardiovascular','Cardiovascular',
@@ -148,21 +111,15 @@ inside = [
 hier_index = list(zip(outside,inside))
 hier_index = pd.MultiIndex.from_tuples(hier_index)
 
-
-# In[8]:
-
-
 #Creates table for each procedure column with supervision 
 #Removes rows with missing entries
 #Renames columns to "Procedure Type" and "Supervision"
-
 anaesthetic_procedure_log = procedure_log[['Procedure Type (Anaesthesia)','Supervision']].dropna().rename(columns={"Procedure Type (Anaesthesia)":"Procedure Type"})
 medicine_procedure_log = procedure_log[['Procedure Type (Medicine)','Supervision']].dropna().rename(columns={"Procedure Type (Medicine)":"Procedure Type"})
 pain_procedure_log = procedure_log[['Procedure Type (Pain)','Supervision']].dropna().rename(columns={"Procedure Type (Pain)":"Procedure Type"})
 anaesthetic_sheet_procedure_log = anaesthetic_log[['Procedure Type','Procedure Supervision']].dropna().rename(columns={"Procedure Supervision":"Supervision"})
 
 #Contatencates above into a single table with 2 columns "Procedure Type" and "Supervision"
-
 procedures_all = pd.concat([
     anaesthetic_procedure_log,
     medicine_procedure_log,
@@ -171,21 +128,13 @@ procedures_all = pd.concat([
 )
 
 #Makes Supervision column all lower case to avoid duplication
-
 procedures_all['Supervision'] = procedures_all['Supervision'].str.lower()
 
 #Subdivides all procedures by level of supervision
-
 procedures_all_local = procedures_all[(procedures_all['Supervision']=='supervised') | (procedures_all['Supervision']=='observed')]
 procedures_all_distant = procedures_all[procedures_all['Supervision']=='solo']
-#procedures_all_teaching
-
-
-# In[9]:
-
 
 #Data for procedure table columns
-
 procedures_total = [
     len(procedures_all[(procedures_all['Procedure Type']=='rsi')|(procedures_all['Procedure Type']=='emergency-intubation')|(procedures_all['Procedure Type']=='airway-protection')]),
     len(procedures_all[procedures_all['Procedure Type']=='percutaneous-tracheostomy']),
@@ -249,12 +198,7 @@ procedures_total_distant = [
     len(procedures_all_distant[procedures_all_distant['Procedure Type']=='brainstem-death-testing']),
 ]
 
-
-# In[10]:
-
-
 #Procedures Table
-
 Procedures = pd.DataFrame(
     data=[procedures_total_local, procedures_total_distant, procedures_total], 
     index= ['Local Supervision', 'Distant Supervision', 'Total'],
@@ -263,33 +207,10 @@ Procedures = pd.DataFrame(
 
 #Transpose table
 Procedures = Procedures.T
-
-
-# In[11]:
-
-
 Procedures.index.names = (['System', 'Procedure'])
 
 
-# ## Preview Tables
-
-# In[12]:
-
-
-Events
-
-
-# In[13]:
-
-
-Procedures
-
-
-# ## Export to Excel
-
-# In[16]:
-
-
+# Export to Excel
 with pd.ExcelWriter(f"{name} FICM Logbook Summary {start_date} to {end_date}.xlsx") as writer:
     Events.to_excel(writer, sheet_name='Events')
     Procedures.to_excel(writer, sheet_name='Procedures')
