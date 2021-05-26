@@ -11,5 +11,4 @@ Useful for Dual Anaesthetics and ICM Trainees in the UK who maintain an LLP Anae
 
 ## Webapp
 Developed by @Stuk with pyodide
-https://stuk.github.io/pyder/
-https://github.com/Stuk/pyder
+https://hobnobs9444.github.io/logbook/
