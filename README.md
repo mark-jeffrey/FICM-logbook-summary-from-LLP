@@ -10,5 +10,6 @@ Useful for Dual Anaesthetics and ICM Trainees in the UK who maintain an LLP Anae
 6. Running the script will then generate an excel file in the current directory with 'Events' and 'Procedures' tables on seperate sheets
 
 ## Webapp
-Developed by @Stuk with pyodide
+Developed by [@Stuk](https://github.com/Stuk) with pyodide
+
 https://hobnobs9444.github.io/logbook/
