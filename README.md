@@ -15,7 +15,7 @@ Use this if executing as python script (more accurate than the current version o
 
 ## Webapp
 
-Uses an logbook.py which doesn't incorporate date selection - delete rows manually for unwanted date periods prior to running the script
+Uses and older version which doesn't incorporate date selection - delete rows manually for unwanted date periods prior to running the script
 
 https://hobnobs9444.github.io/logbook/
 
