@@ -10,7 +10,7 @@ Use this if executing as python script (more accurate than the current version o
 2. Save the python script and logbook in same directory
 3. Change filename varible to match the excel sheet filename
 4. Change start_date and end_date for date filtered report
-5. Running the script
+5. Run the script
 
 
 ## Webapp
